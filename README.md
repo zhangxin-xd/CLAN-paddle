@@ -58,7 +58,7 @@ CLAN-Paddle
 CUDA_VISIBLE_DEVICES=0 python CLAN_train.py --snapshot-dir ./snapshots/SYS2Cityscapes
 ```
 
-权重保存在./snapshots目录下
+权重和训练日志保存在./snapshots目录下
 
 ### 测试
 

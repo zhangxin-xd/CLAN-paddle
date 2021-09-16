@@ -71,8 +71,8 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gt_dir', default='./data/Cityscapes/gtFine/val',type=str, help='directory which stores CityScapes val gt images')
-    parser.add_argument('--pred_dir', default='./result/cityscapes_4000',type=str, help='directory which stores CityScapes val pred images')
+    parser.add_argument('gt_dir', default='./data/Cityscapes/gtFine/val',type=str, help='directory which stores CityScapes val gt images')
+    parser.add_argument('pred_dir', default='./result/cityscapes_4000',type=str, help='directory which stores CityScapes val pred images')
     parser.add_argument('--devkit_dir', default='./dataset/cityscapes_list', help='base directory of cityscapes')
     args = parser.parse_args()
     main(args)

@@ -33,7 +33,7 @@ CLAN-Paddle
 
 #### 下载数据集和预训练权重
 - [GTA5 Dataset](https://download.visinf.tu-darmstadt.de/data/from_games/)  
-- 
+
 - [SYNTHIA Dataset](http://synthia-dataset.net/download-2/)  
 
 - [Cityscapes Dataset](https://www.cityscapes-dataset.com/)  

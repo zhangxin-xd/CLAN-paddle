@@ -90,7 +90,7 @@ def main():
     testloader = paddle.io.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                                     batch_size=1, shuffle=False)
 
-    interp = nn.Upsample(size=(1024, 2048), mode='bilinear', align_corners=True)
+    interp = nn.Upsample(size=(1024, 2048), mode='BICUBIC', align_corners=True)
     
     with paddle.no_grad():
         for index, batch in enumerate(testloader):

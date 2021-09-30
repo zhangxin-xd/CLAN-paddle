@@ -14,7 +14,7 @@ from utils.loss import CrossEntropy2d
 from utils.loss import WeightedBCEWithLogitsLoss, CrossEntropyLoss
 import paddle.nn.functional as F
 
-#from dataset.gta5_dataset import GTA5DataSet
+from dataset.gta5_dataset import GTA5DataSet
 from dataset.synthia_dataset import SYNTHIADataSet
 from dataset.cityscapes_dataset import cityscapesDataSet
 
@@ -32,8 +32,8 @@ IGNORE_LABEL = 255
 MOMENTUM = 0.9
 NUM_CLASSES = 19
 RESTORE_FROM = './model/pretrained.pdparams'
-#RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
-#RESTORE_FROM_D = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000_D.pth' #For retrain
+#RESTORE_FROM = '' #For retrain
+#RESTORE_FROM_D = '' #For retrain
 
 SAVE_NUM_IMAGES = 2
 SAVE_PRED_EVERY = 2000
@@ -160,10 +160,7 @@ def loss_calc(pred, label):
     """
     # out shape batch_size x channels x h x w -> batch_size x channels x h x w
     # label shape h x w x 1 x batch_size  -> batch_size x 1 x h x w
-    #print(label.shape)
     label=paddle.to_tensor(label, dtype='float32',stop_gradient=False)
-    #label =paddle.to_tensor(label, dtype='float32', place=paddle.CUDAPlace(0), stop_gradient=False)
-    #criterion = CrossEntropy2d(NUM_CLASSES)
     criterion = CrossEntropyLoss(NUM_CLASSES)
     return criterion(pred, label)
 
@@ -239,8 +236,6 @@ def main():
 # =============================================================================
     
     model_D.train()
-    #model_D.cuda(args.gpu)
-
 
     if not os.path.exists(args.snapshot_dir):
         os.makedirs(args.snapshot_dir)
@@ -252,7 +247,6 @@ def main():
                         scale=True, mirror=True, mean=IMG_MEAN),
             batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers,)
     else:
-        #print(args.data_list)
         trainloader = paddle.io.DataLoader(
             SYNTHIADataSet(args.data_dir, args.data_list, max_iters=args.num_steps * args.iter_size * args.batch_size,
                         crop_size=input_size_source,
@@ -279,7 +273,6 @@ def main():
 
     bce_loss = paddle.nn.BCEWithLogitsLoss() 
     weighted_bce_loss = WeightedBCEWithLogitsLoss()
-    #criterion = nn.functional.cross_entropy()
 
     interp_source = paddle.nn.Upsample(size=(input_size_source[1], input_size_source[0]), mode='bilinear', align_corners=True,data_format='NCHW')
     interp_target = paddle.nn.Upsample(size=(input_size_target[1], input_size_target[0]), mode='bilinear', align_corners=True,data_format='NCHW')
@@ -304,7 +297,6 @@ def main():
             param.stop_gradient = True
 
         # Train with Source
-        #for _, batch in trainloader_iter：
         _, batch = next(trainloader_iter)
         images_s, labels_s, _, _, _ = batch
         images_s=paddle.to_tensor(images_s, dtype='float32',stop_gradient=False)
@@ -316,9 +308,7 @@ def main():
         #Segmentation Loss
 
         loss_seg = paddle.to_tensor((loss_calc(pred_source1, labels_s) + loss_calc(pred_source2, labels_s)),stop_gradient=False)
-        #loss_seg = paddle.to_tensor((nn.functional.cross_entropy(pred_source1, labels_s) + nn.functional.cross_entropy(pred_source2, labels_s)),stop_gradient=False)
         loss_seg.backward()
-        #print(loss_seg.stop_gradient)
         # Train with Target
         _, batch = next(targetloader_iter)
         images_t, _, _, _ = batch
@@ -344,7 +334,7 @@ def main():
                    
         loss_adv = paddle.to_tensor(loss_adv * Lambda_adv * damping,stop_gradient=False)
         loss_adv.backward()
-        #print(loss_adv.stop_gradient)
+
         #Weight Discrepancy Loss 
         W5 = None
         W6 = None
@@ -361,7 +351,7 @@ def main():
         loss_weight = (paddle.matmul(W5, W6) / (paddle.norm(W5) * paddle.norm(W6)) + 1) # +1 is for a positive loss
         loss_weight = paddle.to_tensor(loss_weight * Lambda_weight * damping * 2,stop_gradient=False)
         loss_weight.backward()
-        #print(loss_weight.stop_gradient)
+
         #======================================================================================
         # train D
         #======================================================================================
@@ -377,12 +367,11 @@ def main():
         
         D_out_s = interp_source(model_D(F.softmax(pred_source1 + pred_source2, axis = 1)))
 
-        #v3 = paddle.full_like(D_out_s,source_label)
         v3 = paddle.to_tensor(paddle.full_like(D_out_s,source_label), stop_gradient=False)
         loss_D_s = paddle.to_tensor(bce_loss(D_out_s,v3) ,stop_gradient=False)
 
         loss_D_s.backward()
-        #print(loss_D_s.stop_gradient)
+
         # Train with Target
         pred_target1 = pred_target1.detach()
         pred_target2 = pred_target2.detach()
@@ -402,7 +391,7 @@ def main():
             loss_D_t = paddle.to_tensor(bce_loss(D_out_t,v5),stop_gradient=False)
             
         loss_D_t.backward()
-        #print(loss_D_t.stop_gradient)
+
         optimizer.step()
         optimizer_D.step()
         

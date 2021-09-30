@@ -47,12 +47,7 @@ class SYNTHIADataSet(paddle.io.Dataset):
         cropsize = self.crop_size
         if self.scale:
             r = random.random()
-            #cropsize = (int(self.crop_size[0] * 1.3), int(self.crop_size[1] * 1.3))
-            if r > 0.7:
-                cropsize = (int(self.crop_size[0] * 1.1), int(self.crop_size[1] * 1.1))
-            elif r < 0.3:
-                cropsize = (int(self.crop_size[0] * 0.8), int(self.crop_size[1] * 0.8))
-          
+            cropsize = (int(self.crop_size[0] * 1.5), int(self.crop_size[1] * 1.5))
         return cropsize
     
     def __getitem__(self, index):

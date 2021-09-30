@@ -14,16 +14,11 @@ CLAN-Paddle
 
 本项目实现了GTA5和SYNTHIA Dataset到Cityscapes Dataset，实现在Cityscapes Dataset上的语义分割。
 
-||road |side. |buil.|wall|fence|pole|light |sign|vege. |terr.|sky |pers. |rider |car |truck|bus |train|moto |bike |mIoU |
-|  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  | 
-|paddle复现|87.06|30.26|79.6|23.43|20.08|26.59|30.92|17.24|82.76|29.58|76.05|57.12|26.6|82.82|35.97|41.65|0.02|24.85|29.23|42.2
-|原文|87.0|27.1|79.6|27.3|23.3|28.3|35.5|24.2|83.6|27.4|74.2|58.6|28.0|76.3|33.1|36.7|6.7|31.9|31.4|43.16|
+||GTA5 |SYNTHIA |
+|  ----  |  ----  |  ----  | 
+|paddle复现|42.2|45.59|
+|原文|43.16|47.8
 
-
-||road |side. |buil.|light |sign|vege. |sky |pers. |rider |car |bus |moto |bike |mIoU |
-|  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |
-|paddle复现|84.04|40.78|79.03|11.14|6.48|80.12|82.78|56.07|22.32|66.71|25.51|12.89|28.14|45.59|
-|原文|81.3|37.0|80.1|16.1|13.7|78.2|81.5|53.4|21.2|73.0|32.9|22.6|30.7|47.8|
 
 <img src=https://github.com/zhangxin-xd/CLAN-paddle/blob/main/frankfurt_000001_001464_leftImg8bit_color.png width=50% />
 
@@ -37,12 +32,13 @@ CLAN-Paddle
 ### 训练
 
 #### 下载数据集和预训练权重
-  
+- [GTA5 Dataset](https://download.visinf.tu-darmstadt.de/data/from_games/)  
+- 
 - [SYNTHIA Dataset](http://synthia-dataset.net/download-2/)  
 
 - [Cityscapes Dataset](https://www.cityscapes-dataset.com/)  
 
-- [Imagenet上的预训练权重](https://pan.baidu.com/s/1iSNNchygnzhrrGiBOs9Umw)  提取码：6666
+- [Imagenet上的预训练权重](https://pan.baidu.com/s/1iSNNchygnzhrrGiBOs9Umw) (6666)
 
 文件夹组织如下
 
@@ -51,6 +47,9 @@ CLAN-Paddle
 │   ├── Cityscapes/     
 |   |   ├── gtFine/
 |   |   ├── leftImg8bit/
+│   ├── GTA5/
+|   |   ├── images/
+|   |   ├── labels/
 │   ├── SYNTHIA/ 
 |   |   ├── RAND_CITYSCAPES/
 │   └── 			
@@ -74,26 +73,17 @@ CUDA_VISIBLE_DEVICES=0 python CLAN_evaluate.py --restore-from  ./snapshots/SYS2C
 
 此处提供我们训好的权重，可以直接进行测试，图片结果保存在./result中。  
 
-[权重用于直接测试](https://pan.baidu.com/s/1BaUgB87uQ-bM7g4DdqPoMQ ) 提取码：6666
+[权重SYS](https://pan.baidu.com/s/1BaUgB87uQ-bM7g4DdqPoMQ ) (6666)
 
-### 评估
+[权重GAT](https://pan.baidu.com/s/1wp8Lczp_o8v0aMTONPyUtw ) (6666)
 
-```
-CUDA_VISIBLE_DEVICES=0 python CLAN_evaluate.py --restore-from  ./snapshots/SYS2Cityscapes/SYS_100000.paradms --save ./result/SYS2Cityscapes_100000
-```
-
-此处提供我们训好的权重，可以直接进行测试  
-
-[权重用于直接测试](https://pan.baidu.com/s/1BaUgB87uQ-bM7g4DdqPoMQ)  
-
-提取码：6666
 
 ### 计算IoU
 
 ```
 python CLAN_iou.py ./data/Cityscapes/gtFine/val result/SYS2Cityscapes_100000
 ```
-注意：最好的权重不一定是最后的权重，所以可以通过运行CLAN_evaluate_bulk.py 和 CLAN_iou_bulk.py 评估每个权重的性能。
+注意：最好的权重不一定是最后的权重，所以可以通过运行CLAN_evaluate_bulk.py 和 CLAN_iou_bulk.py 评估训练中得到的每个权重的性能。
 ```
 CUDA_VISIBLE_DEVICES=0 python CLAN_evaluate_bulk.py
 ```
@@ -102,6 +92,7 @@ python CLAN_iou_bulk.py
 ```
 结果列在./mIoU_results中的excel中。
 
+对于GAT5 dataset原论文中使用19类进行训练，衡量19类。
 对于SYNTHIA dataset原论文中使用19类进行训练，但只衡量13类。
 
 ## 五、模型信息

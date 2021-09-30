@@ -12,7 +12,12 @@ CLAN-Paddle
 
 ## 二、复现结果
 
-本项目通过从SYNTHIA Dataset到Cityscapes Dataset的迁移，实现在Cityscapes Dataset上的语义分割。
+本项目实现了GTA5和SYNTHIA Dataset到Cityscapes Dataset，实现在Cityscapes Dataset上的语义分割。
+
+||road |side. |buil.|light |sign|vege. |sky |pers. |rider |car |bus |moto |bicycle |mIoU |
+|  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |
+|paddle复现|84.04|40.78|79.03|11.14|6.48|80.12|82.78|56.07|22.32|66.71|25.51|12.89|28.14|45.59|
+|原文|81.3|37.0|80.1|16.1|13.7|78.2|81.5|53.4|21.2|73.0|32.9|22.6|30.7|47.8|
 
 ||road |side. |buil.|light |sign|vege. |sky |pers. |rider |car |bus |moto |bicycle |mIoU |
 |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |

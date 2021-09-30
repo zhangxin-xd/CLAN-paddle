@@ -12,7 +12,7 @@ CLAN-Paddle
 
 ## 二、复现结果
 
-本项目实现了GTA5和SYNTHIA Dataset到Cityscapes Dataset，实现在Cityscapes Dataset上的语义分割。
+本项目实现了GTA5和SYNTHIA Dataset到Cityscapes Dataset的迁移，实现在Cityscapes Dataset上的语义分割。
 
 ||GTA5 |SYNTHIA |
 |  ----  |  ----  |  ----  | 

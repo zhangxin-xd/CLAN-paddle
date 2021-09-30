@@ -62,7 +62,7 @@ def get_arguments():
 def main():
     """Create the model and start the evaluation process."""
 
-    for i in range(44, 50):
+    for i in range(1, 50):
         model_path = './snapshots/SYS_{0:d}.pdparams'.format(i*2000)
         save_path = './result/SYS2Cityscapes_{0:d}'.format(i*2000)
         args = get_arguments()
@@ -78,12 +78,12 @@ def main():
         model.set_state_dict(saved_state_dict)
         
         model.eval()
-        #model.cuda(gpu0)
+     
             
         testloader = paddle.io.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024,512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                                         batch_size=1, shuffle=False)
     
-        interp = nn.Upsample(size=(1024, 2048), mode='bilinear', align_corners=True)
+        interp = nn.Upsample(size=(1024, 2048), mode='BICUBIC', align_corners=True)
     
         with paddle.no_grad():
             for index, batch in enumerate(testloader):
@@ -103,7 +103,7 @@ def main():
                 name = name[0].split('/')[-1]
                 output.save('%s/%s' % (save_path, name))
     
-                output_col.save('%s/%s_color.png' % (save_path, name.split('.')[0]))
+                output_col.save('%s/%s_color.png' % (save_path, name.split('.')[0]))#为节省时间可以不保存
 
         print(save_path)
 if __name__ == '__main__':
